@@ -1,129 +1,100 @@
-<!-- <form action="file.php" method="post" enctype="multipart/form-data">
-    <input type="file" name="my_file[]" multiple="multiple"></br></br>
-    <input type="submit" value="upload">
-</form> -->
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
 
-<?php
+<body>
 
+    <form action="file.php" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="exampleInputText">Name</label>
+            <input type="text" name="name" class="form-control" id="exampleInputText" aria-describedby="emailHelp" required>
+            <small id="emailHelp" class="form-text text-muted">We'll never share your Name with anyone else.</small>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputEmail1">Email address</label>
+            <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+            <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1">Password</label>
+            <input type="password" name="password" class="form-control" id="exampleInputPassword1" required>
+        </div>
+        <div class="form-group">
+            <label for="exampleFormControlFile1">Example file input</label>
+            <input type="file" name="file" class="form-control-file" id="exampleFormControlFile1" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
 
-// if ($_SERVER["REQUEST_METHOD"] == "POST") :
+    <?php
 
-    // $image = $_FILES["my_file"];
-    // $image_name = $image["name"];
-    // $image_type = $image["type"];
-    // $image_temp = $image["tmp_name"];
-    // $image_size = $image["size"];
-    // $image_error = $image["error"];
-
-    // $type_image = ['jpg', 'gif', 'jpeg', 'png'];
-
-    // $reuslt = implode(".",$type_image);
-    // echo $reuslt;
-    // echo "<pre>";
-    // print_r(explode("/",$reuslt));
-    // if ($image_error[0] == 4) :
-
-    //     echo "<div style='background: #FFF; margin: 20px; padding: 20px;'> انتا مرفعتش حاجة</div><br/>";
-
-    // else :
-    //     $count_image = count($image_name);
-
-
-    //     for ($i = 0; $i < $count_image; $i++) {
-    //         $error = [];
-
-    //         $tmp = explode('.', $image_name[$i]);
-    //         $image_extension[$i] = strtolower(end($tmp));
-
-    //         $image_rond[$i] = rand(0, 100000000000000) . '.' . $image_extension[$i];
-
-    //         if ($image_size[$i] > 10000) {
-    //             $error[] = "<div style='background: #777; margin: 20px; padding: 20px;'>" . $image_name[$i] . "حجم الملف كبير جدا</div><br/>";
-    //         }
-
-    //         if (!in_array($image_extension[$i], $type_image)) {
-    //             $error[] = "<div>$image_name[$i] ليست صورة </div>";
-    //         }
-
-    //         if (empty($error)) :
-
-    //             move_uploaded_file($image_temp[$i], $_SERVER["DOCUMENT_ROOT"] . "\phpproject\\" . $image_rond[$i]);
-    //             echo "<div style='background: #111; color: #999959; margin: 20px; padding: 20px;'> $image_name[$i] تم الرفغ</div><br/>";
-
-    //         else :
-
-    //             foreach ($error as $value) {
-    //                 echo $value;
-    //             }
-
-    //         endif;
-    //     }
-    // endif;
-// endif;
-
-?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<?php
-
-/*
-if ($_SERVER["REQUEST_METHOD"] == "POST") :
-    $error = [];
-
-    $image = $_FILES["my_file"];
-    $image_name = $image["name"];
-    $image_type = $image["type"];
-    $image_temp = $image["tmp_name"];
-    $image_size = $image["size"];
-
-
-
-
-    echo "<pre>";
-    print_r($image);
-    echo "</pre>";
-
-    $type_image = ['jpg', 'gif', 'jpeg', 'png'];
-
-    // $image_extension = strtolower(end(explode('.',$image_name)));
-
-    $tmp = explode('.', $image_name);
-    $image_extension = strtolower(end($tmp));
-
-    if ($image_size > 100000000) {
-        $error[] = "<div> حجم الملف كبير جدا</div>";
+    $con = new mysqli("localhost", "root", "", "file");
+    if ($con->connect_error) {
+        die("ERROR : " . mysqli_connect_error());
+        exit();
     }
 
-    if (!in_array($image_extension, $type_image)) {
-        $error[] = "<div> ليست صورة </div>";
-    }
+    if ($_SERVER["REQUEST_METHOD"] == "POST") :
+        $error = [];
 
-    if (empty($error)) :
-        move_uploaded_file($image_temp, $_SERVER["DOCUMENT_ROOT"] . "\phpproject\\" . $image_name);
-        echo "تم الرفغ";
-    else :
-        foreach ($error as $value) :
-            echo $value;
-        endforeach;
+        $name  = $_POST["name"];
+        $email = $_POST["email"];
+        $pass  = $_POST["password"];
+        $image = $_FILES["file"];
+
+        //
+
+        $img_name = $image["name"];
+        $img_type = $image["type"];
+        $tmp_name = $image["tmp_name"];
+        $img_size = $image["size"];
+
+
+
+        if (empty($error)) {
+            $ins = "INSERT INTO `user` (`name`,`email`,`password`,`image`)
+                            VALUES ('$name','$name','$pass','$img_name')";
+            $con->query($ins);
+            move_uploaded_file($tmp_name, $_SERVER["DOCUMENT_ROOT"] . "//file//" . $img_name);
+            echo "file Upload";
+        }
+
     endif;
-    */
-// endif;
+    $sql = "SELECT `id`,`name`,`email`,`image` FROM `user`";
+    $result = $con->query($sql);
+    $ruselt = $result->fetch_all(MYSQLI_ASSOC);
 
-?>
+    ?>
+
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($ruselt as $value) : ?>
+                <tr>
+                    <th><?= $value["id"] ?></th>
+                    <th><?= $value["name"] ?></th>
+                    <th><?= $value["email"] ?></th>
+                    <th> <img class='img' src='<?= $value["image"] ?>'></th>
+                </tr>
+            <?php endforeach ?>
+        </tbody>
+    </table>
+    <script src="bootstrap.min.js"></script>
+</body>
+
+</html>
